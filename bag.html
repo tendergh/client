@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Shopping Bag Drawer</title>
+  <script src="tailwind.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
+  <style>
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Drawer animations */
+    .drawer-enter {
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .drawer-enter-active {
+      transform: translateX(0);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+  <!-- Main Content -->
+  <div class="p-4 md:p-8">
+    <!-- Header with Shopping Bag Button -->
+    <header class="flex items-center justify-between mb-8 bg-white p-6 rounded-lg shadow-sm">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Online Store</h1>
+      <button id="bagToggle" class="relative p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <span id="bagCount"
+          class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">3</span>
+      </button>
+    </header>
+
+    <!-- Sample Products Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Product 1 -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="h-48 bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center">
+          <span class="text-blue-600 font-semibold">Product Image</span>
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-gray-800 mb-2">Wireless Headphones</h3>
+          <p class="text-gray-600 text-sm mb-3">Premium quality wireless headphones with noise cancellation</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xl font-bold text-blue-600">$199.99</span>
+            <button
+              onclick="addToBag('wireless-headphones', 'Wireless Headphones', 199.99, 'https://via.placeholder.com/100')"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+              Add to Bag
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="h-48 bg-gradient-to-br from-green-200 to-green-300 flex items-center justify-center">
+          <span class="text-green-600 font-semibold">Product Image</span>
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-gray-800 mb-2">Smart Watch</h3>
+          <p class="text-gray-600 text-sm mb-3">Advanced fitness tracking with heart rate monitor</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xl font-bold text-green-600">$299.99</span>
+            <button onclick="addToBag('smart-watch', 'Smart Watch', 299.99, 'https://via.placeholder.com/100')"
+              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+              Add to Bag
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="h-48 bg-gradient-to-br from-purple-200 to-purple-300 flex items-center justify-center">
+          <span class="text-purple-600 font-semibold">Product Image</span>
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-gray-800 mb-2">Laptop Stand</h3>
+          <p class="text-gray-600 text-sm mb-3">Ergonomic aluminum laptop stand for better posture</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xl font-bold text-purple-600">$79.99</span>
+            <button onclick="addToBag('laptop-stand', 'Laptop Stand', 79.99, 'https://via.placeholder.com/100')"
+              class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+              Add to Bag
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="h-48 bg-gradient-to-br from-red-200 to-red-300 flex items-center justify-center">
+          <span class="text-red-600 font-semibold">Product Image</span>
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-gray-800 mb-2">Gaming Mouse</h3>
+          <p class="text-gray-600 text-sm mb-3">High precision gaming mouse with RGB lighting</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xl font-bold text-red-600">$89.99</span>
+            <button onclick="addToBag('gaming-mouse', 'Gaming Mouse', 89.99, 'https://via.placeholder.com/100')"
+              class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+              Add to Bag
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity duration-300"></div>
+
+  <!-- Shopping Bag Drawer -->
+  <div id="bagDrawer"
+    class="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <!-- Drawer Header -->
+    <div
+      class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center space-x-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <h2 class="text-lg font-semibold">Shopping Bag</h2>
+        <span id="drawerItemCount" class="bg-white/20 text-sm px-2 py-1 rounded-full">3 items</span>
+      </div>
+      <button id="closeBag" class="p-2 hover:bg-white/20 rounded-lg transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Bag Items (Scrollable) -->
+    <div id="bagItems" class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
+      <!-- Sample items will be populated by JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyBag" class="flex-1 flex flex-col items-center justify-center p-8 text-center hidden">
+      <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+      <h3 class="text-lg font-semibold text-gray-600 mb-2">Your bag is empty</h3>
+      <p class="text-gray-500 text-sm">Add some products to get started!</p>
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="border-t bg-gray-50 p-4 space-y-4 flex-shrink-0">
+      <!-- Subtotal -->
+      <div class="flex items-center justify-between text-lg font-semibold">
+        <span>Subtotal:</span>
+        <span id="subtotal">$569.97</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-center gap-4">
+          <a class="flex flex-1 justify-center items-center ring-2 bg-green-600 p-2 rounded-md gap-2 text-white cursor-pointer"><i data-feather="send" class="w-5 h-5"></i>Whatsapp</a>
+          <a class="flex flex-1 justify-center items-center ring-red-500 ring-2 text-red-600 p-2 rounded-md gap-2 bg-white cursor-pointer"><i data-feather="mail" class="w-5 h-5"></i>Email</a>
+        </div>
+        <button onclick="clearBag()"
+          class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg font-medium transition-colors">
+          Clear Bag
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    feather.replace();
+    // Shopping bag state
+    let bagItems = {
+      'wireless-headphones': {
+        id: 'wireless-headphones',
+        name: 'Wireless Headphones',
+        price: 199.99,
+        quantity: 1,
+        image: 'https://via.placeholder.com/100x100/3B82F6/ffffff?text=WH'
+      },
+      'smart-watch': {
+        id: 'smart-watch',
+        name: 'Smart Watch',
+        price: 299.99,
+        quantity: 1,
+        image: 'https://via.placeholder.com/100x100/10B981/ffffff?text=SW'
+      },
+      'laptop-stand': {
+        id: 'laptop-stand',
+        name: 'Laptop Stand',
+        price: 79.99,
+        quantity: 1,
+        image: 'https://via.placeholder.com/100x100/8B5CF6/ffffff?text=LS'
+      }
+    };
+
+    // DOM elements
+    const bagDrawer = document.getElementById('bagDrawer');
+    const overlay = document.getElementById('overlay');
+    const bagToggle = document.getElementById('bagToggle');
+    const closeBag = document.getElementById('closeBag');
+    const bagCount = document.getElementById('bagCount');
+    const drawerItemCount = document.getElementById('drawerItemCount');
+    const bagItemsContainer = document.getElementById('bagItems');
+    const emptyBag = document.getElementById('emptyBag');
+    const subtotalElement = document.getElementById('subtotal');
+
+    function updateBagDisplay() {
+      const itemCount = Object.keys(bagItems).length;
+      const totalItems = Object.values(bagItems).reduce((sum, item) => sum + item.quantity, 0);
+
+      bagCount.textContent = totalItems;
+      drawerItemCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+
+      if (itemCount === 0) {
+        bagItemsContainer.classList.add('hidden');
+        emptyBag.classList.remove('hidden');
+      } else {
+        bagItemsContainer.classList.remove('hidden');
+        emptyBag.classList.add('hidden');
+        renderBagItems();
+      }
+
+      updateSubtotal();
+    }
+
+    function renderBagItems() {
+      bagItemsContainer.innerHTML = '';
+
+      Object.values(bagItems).forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'flex items-center space-x-4 bg-gray-50 p-4 rounded-lg';
+        itemElement.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg bg-gray-200">
+          <div class="flex-1 min-w-0">
+            <h4 class="font-medium text-gray-900 truncate">${item.name}</h4>
+            <p class="text-sm text-gray-600">$${item.price.toFixed(2)}</p>
+            <div class="flex items-center space-x-2 mt-2">
+              <button onclick="updateQuantity('${item.id}', -1)" class="w-8 h-8 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-full transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                </svg>
+              </button>
+              <span class="w-8 text-center font-medium">${item.quantity}</span>
+              <button onclick="updateQuantity('${item.id}', 1)" class="w-8 h-8 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-full transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="font-semibold text-gray-900">$${(item.price * item.quantity).toFixed(2)}</p>
+            <button onclick="removeFromBag('${item.id}')" class="text-red-500 hover:text-red-700 text-sm mt-2 transition-colors">
+              Remove
+            </button>
+          </div>
+        `;
+        bagItemsContainer.appendChild(itemElement);
+      });
+    }
+
+    function updateSubtotal() {
+      const total = Object.values(bagItems).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      subtotalElement.textContent = `$${total.toFixed(2)}`;
+    }
+
+    function addToBag(id, name, price, image) {
+      if (bagItems[id]) {
+        bagItems[id].quantity += 1;
+      } else {
+        bagItems[id] = { id, name, price, quantity: 1, image };
+      }
+      updateBagDisplay();
+
+      // Show success feedback
+      const button = event.target;
+      const originalText = button.textContent;
+      button.textContent = 'Added!';
+      button.classList.add('bg-green-600', 'hover:bg-green-700');
+      button.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'bg-red-600', 'hover:bg-red-700', 'bg-purple-600', 'hover:bg-purple-700');
+
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove('bg-green-600', 'hover:bg-green-700');
+        button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+      }, 1500);
+    }
+
+    function updateQuantity(id, change) {
+      if (bagItems[id]) {
+        bagItems[id].quantity += change;
+        if (bagItems[id].quantity <= 0) {
+          delete bagItems[id];
+        }
+        updateBagDisplay();
+      }
+    }
+
+    function removeFromBag(id) {
+      delete bagItems[id];
+      updateBagDisplay();
+    }
+
+    function clearBag() {
+      if (confirm('Are you sure you want to clear your bag?')) {
+        bagItems = {};
+        updateBagDisplay();
+      }
+    }
+
+    function openBag() {
+      overlay.classList.remove('hidden');
+      setTimeout(() => {
+        overlay.classList.add('opacity-100');
+        bagDrawer.classList.remove('translate-x-full');
+      }, 10);
+    }
+
+    function closeBagDrawer() {
+      overlay.classList.remove('opacity-100');
+      bagDrawer.classList.add('translate-x-full');
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+      }, 300);
+    }
+
+    // Event listeners
+    bagToggle.addEventListener('click', openBag);
+    closeBag.addEventListener('click', closeBagDrawer);
+    overlay.addEventListener('click', closeBagDrawer);
+
+    // Close drawer on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !bagDrawer.classList.contains('translate-x-full')) {
+        closeBagDrawer();
+      }
+    });
+
+    // Prevent drawer from closing when clicking inside it
+    bagDrawer.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Initialize the display
+    updateBagDisplay();
+  </script>
+</body>
+
+</html>
